@@ -46,18 +46,18 @@ def error():
             if word['word'] == selected_word:
                 print(word['word'])
                 print('yes')
-                url = f'/detail/{selected_word.split('$')[0]}?status_give=old'
+                url = '/detail/' + selected_word.split('$')[0] + '?status_give=old'
                 return jsonify({'msg': url})
               
         print('no')
-        url = f'/detail/{selected_word.split('$')[0]}?status_give=new'
+        url = '/detail/' + selected_word.split('$')[0] + '?status_give=new'
         return jsonify({'msg': url})
     return render_template('error.html', word=word, suggestions=suggestions)
 
 @app.route('/detail/<keyword>')
 def detail(keyword):
     api_key = '7bbea491-8fe9-4dfb-ada3-ca4b5e41739c'
-    url = f'https://www.dictionaryapi.com/api/v3/references/collegiate/json/{keyword}?key={api_key}'
+    url = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/' + keyword + '?key=' + api_key
     response = requests.get(url)
     definitions = response.json()
     if not definitions:
@@ -95,7 +95,7 @@ def save_word():
     db.words.insert_one(doc)
     return jsonify({
         'result': 'success',
-        'msg': f'the word, {word}, was saved!!!',
+        'msg': 'The word, ' + word + ', has successfully saved!!!',
     })
 
 
@@ -106,7 +106,7 @@ def delete_word():
     db.examples.delete_many({'word': word})
     return jsonify({
         'result': 'success',
-        'msg': f'the word {word} was deleted'
+        'msg': 'The word, ' + word + ', has been deleted!!!',
     })
 
 
@@ -133,7 +133,7 @@ def save_ex():
         'example':example,
     }
     db.examples.insert_one(doc)
-    return jsonify({'result': 'success','msg':f'Your example {example}, has been saved!'})
+    return jsonify({'result': 'success','msg':'Your example ' + example + ', has been saved!'})
 
 
 @app.route('/api/delete_ex', methods=['POST'])
@@ -142,7 +142,7 @@ def delete_ex():
     word = request.form.get('word')
     print(id,word)
     db.examples.delete_one({'_id':ObjectId(id)})
-    return jsonify({'result': 'success','msg':f'Your example for word {word}, has been deleted!'})
+    return jsonify({'result': 'success','msg':'Your example for word ' + word + ', has been deleted!'})
 
 
 if __name__ == '__main__':
